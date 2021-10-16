@@ -21,6 +21,7 @@ err() {
 # Set a directory
 DIR="$(pwd ...)"
 cd $pwd
+git clone --depth=1 https://github.com/AnGgIt88/tc-build && cd tc-build
 
 # Inlined function to post a message
 export BOT_MSG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
