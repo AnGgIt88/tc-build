@@ -28,5 +28,5 @@ jobs:
           GH_USERNAME: ${{ secrets.GH_USERNAME }}
           GH_EMAIL: ${{ secrets.GH_EMAIL }}
         run: |
-          git clone --depth 1 https://github.com/AnGgIt88/tc-build && cd tc-build
+          git clone --depth=1 https://github.com/AnGgIt88/tc-build && cd tc-build
           bash build-tc.sh
