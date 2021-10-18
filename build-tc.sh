@@ -21,7 +21,7 @@ err() {
 # Set a directory
 DIR="$(pwd ...)"
 cd $pwd
-git clone --depth=1 https://github.com/AnGgIt88/tc-build && cd tc-build
+git clone https://github.com/AnGgIt88/tc-build && cd tc-build
 
 # Inlined function to post a message
 export BOT_MSG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
@@ -63,7 +63,7 @@ tg_post_msg "<b>$LLVM_NAME: Building LLVM. . .</b>"
 [ ! -f install/bin/clang-1* ] && {
 	err "Building LLVM failed ! Kindly check errors !!"
 	tg_post_build "build.log" "$TG_CHAT_ID" "Error Log"
-	exit 1
+	exit
 }
 
 # Build binutils
@@ -90,10 +90,10 @@ for bin in $(find install -mindepth 2 -maxdepth 3 -type f -exec file {} \; | gre
 done
 
 # Release Info
-pushd llvm-project || exit
+pushd llvm-project
 llvm_commit="$(git rev-parse HEAD)"
 short_llvm_commit="$(cut -c-8 <<< "$llvm_commit")"
-popd || exit
+popd
 
 llvm_commit_url="https://github.com/llvm/llvm-project/commit/$short_llvm_commit"
 binutils_ver="$(ls | grep "^binutils-" | sed "s/binutils-//g")"
@@ -106,17 +106,17 @@ tg_post_msg "<b>$LLVM_NAME: Toolchain compilation Finished</b>%0A<b>Clang Versio
 git config --global user.name $GH_USERNAME
 git config --global user.email $GH_EMAIL
 git clone "https://$GH_USERNAME:$GH_TOKEN@$GH_PUSH_REPO_URL" rel_repo
-pushd rel_repo || exit
+pushd rel_repo
 rm -fr ./*
 cp -r ../install/* .
 git checkout README.md # keep this as it's not part of the toolchain itself
 git add .
-git commit -asm "$LLVM_NAME: Bump to $rel_date build
+git commit -asm "$LLVM_NAME: Clang Bump to $rel_date Build for $llvm_commit_url
 
 LLVM commit: $llvm_commit_url
 Clang Version: $clang_version
 Binutils version: $binutils_ver
 Builder commit: https://$GH_PUSH_REPO_URL/commit/$builder_commit"
 git push -f
-popd || exit
+popd
 tg_post_msg "<b>$LLVM_NAME: Toolchain pushed to <code>https://$GH_PUSH_REPO_URL</code></b>"
